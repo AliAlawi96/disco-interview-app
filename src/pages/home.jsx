@@ -7,6 +7,7 @@ import { store } from "../features/slices/dataSlice";
 import { Card } from "../components/card";
 
 const Home = () => {
+	const minimumArtwork = 3;
 	const dispatch = useDispatch();
 	const isLoading = useSelector((state) => state.loading.value);
 	const counter = useSelector((state) => state.counter.value);
@@ -18,17 +19,16 @@ const Home = () => {
 				"https://api.artic.edu/api/v1/artworks?limit=3&fields=id,title,artist_title,medium_display,date_display,place_of_origin"
 			);
 			const data = await response.json();
-			// console.log(data.data);
 			dispatch(store(data.data));
 		};
-		Object.keys(artwork).length === 0 && fetchData();
+		Object.keys(artwork).length < minimumArtwork && fetchData();
 	}, []);
 
 	const onClickHandler = async () => {
 		dispatch(setIsLoading(true));
 		const response = await fetch(
 			`https://api.artic.edu/api/v1/artworks?limit=${
-				counter * 3
+				counter * minimumArtwork
 			}&fields=id,title,artist_title,medium_display,date_display,place_of_origin`
 		);
 		dispatch(increment());

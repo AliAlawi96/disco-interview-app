@@ -7,7 +7,7 @@ export const dataSlice = createSlice({
 	},
 	reducers: {
 		store: (state, action) => {
-			state.value = [action.payload];
+			state.value = [...action.payload];
 		},
 		append: (state, action) => {
 			state.value = [...state.value, action.payload];
@@ -15,7 +15,6 @@ export const dataSlice = createSlice({
 	},
 });
 
-export const { increment, decrement, incrementByAmount, store, add } =
-	dataSlice.actions;
+export const { store, append } = dataSlice.actions;
 
 export default dataSlice.reducer;

@@ -1,10 +1,16 @@
-import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { setIsLoading } from "../features/slices/loadingSlice";
+
+import { increment } from "../features/slices/counterSlice";
+import { store } from "../features/slices/dataSlice";
+import { Card } from "../components/card";
 
 const Home = () => {
-	const [artworks, setArtworks] = useState([]);
-	const [artworkCounter, setArtworkCounter] = useState(2);
-	const [loading, setLoading] = useState(false);
+	const dispatch = useDispatch();
+	const isLoading = useSelector((state) => state.loading.value);
+	const counter = useSelector((state) => state.counter.value);
+	const artwork = useSelector((state) => state.data.value);
 
 	useEffect(() => {
 		const fetchData = async () => {
@@ -13,62 +19,37 @@ const Home = () => {
 			);
 			const data = await response.json();
 			console.log(data.data);
-			setArtworks(data.data);
+			dispatch(store(data.data));
 		};
 		fetchData();
 	}, []);
 
 	const onClickHandler = async () => {
-		setLoading(true);
+		dispatch(setIsLoading(true));
 		const response = await fetch(
 			`https://api.artic.edu/api/v1/artworks?limit=${
-				artworkCounter * 3
+				counter * 3
 			}&fields=id,title,artist_title,medium_display,date_display,place_of_origin`
 		);
-		setArtworkCounter(artworkCounter + 1);
+		dispatch(increment());
 		const data = await response.json();
-		console.log(data.data);
-		setArtworks(data.data);
-		setLoading(false);
+		dispatch(store(data.data));
+		dispatch(setIsLoading(false));
 	};
 
 	return (
-		<div className="flex flex-col items-center w-full">
-			<header className="w-full p-16 text-4xl text-center text-white bg-gray-700">
-				<h1>Art Institute of Chicago</h1>
-			</header>
-			<div className="grid w-full grid-cols-3 gap-2 p-4">
-				{artworks.map((artwork) => {
-					return (
-						<div
-							key={artwork.id}
-							className="flex flex-col justify-between w-full gap-2 p-4 bg-gray-500 rounded "
-						>
-							<main>
-								<h2 className="text-xl font-semibold">
-									{artwork.title}
-								</h2>
-								<p>{artwork.artist_title}</p>
-								<p>{artwork.medium_display}</p>
-								<p>{artwork.place_of_origin}</p>
-								<p>{artwork.date_display}</p>
-							</main>
-							<Link
-								className="p-2 bg-orange-300 rounded w-max"
-								to={`/${artwork.id}`}
-							>
-								Learn More
-							</Link>
-						</div>
-					);
+		<div className="flex flex-col items-center w-full gap-2 p-4 ">
+			<div className="grid w-full grid-cols-3 gap-2">
+				{artwork.map((artwork) => {
+					return <Card key={artwork.id} artwork={artwork} />;
 				})}
 			</div>
 			<button
-				disabled={loading}
+				disabled={isLoading}
 				onClick={() => onClickHandler()}
 				className="p-2 bg-gray-500 rounded"
 			>
-				{loading ? "loading" : "More Options"}
+				{isLoading ? "loading" : "More Options"}
 			</button>
 		</div>
 	);

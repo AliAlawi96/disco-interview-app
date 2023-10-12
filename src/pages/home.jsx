@@ -18,10 +18,10 @@ const Home = () => {
 				"https://api.artic.edu/api/v1/artworks?limit=3&fields=id,title,artist_title,medium_display,date_display,place_of_origin"
 			);
 			const data = await response.json();
-			console.log(data.data);
+			// console.log(data.data);
 			dispatch(store(data.data));
 		};
-		fetchData();
+		Object.keys(artwork).length === 0 && fetchData();
 	}, []);
 
 	const onClickHandler = async () => {
@@ -47,7 +47,7 @@ const Home = () => {
 			<button
 				disabled={isLoading}
 				onClick={() => onClickHandler()}
-				className="p-2 bg-gray-500 rounded"
+				className="p-2 bg-gray-200 rounded"
 			>
 				{isLoading ? "loading" : "More Options"}
 			</button>

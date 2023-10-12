@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 const Card = ({ artwork }) => {
 	return (
-		<div className="flex flex-col justify-between w-full gap-2 p-4 bg-gray-500 rounded ">
+		<div className="flex flex-col justify-between w-full gap-2 p-4 bg-gray-200 rounded ">
 			<main>
 				<h2 className="text-xl font-semibold">{artwork.title}</h2>
 				<p>{artwork.artist_title}</p>
